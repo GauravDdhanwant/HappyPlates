@@ -2,7 +2,7 @@ import streamlit as st
 from urllib.parse import urlencode
 
 def update_url(page_name):
-    query_params = st.experimental_get_query_params()
+    query_params = st.query_params
     query_params["workflow"] = page_name
     st.experimental_set_query_params(**query_params)
 
@@ -88,8 +88,8 @@ def save_and_finalize():
         st.experimental_rerun()
 
 def main():
-    query_params = st.experimental_get_query_params()
-    page = query_params.get("workflow", ["login"])[0]
+    query_params = st.query_params
+    page = query_params.get("workflow", "login")
 
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
