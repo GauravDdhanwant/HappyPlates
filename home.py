@@ -2,16 +2,16 @@ import streamlit as st
 
 def update_url(**kwargs):
     """Update query parameters dynamically."""
-    st.query_params.clear()
+    query_params = st.query_params
+    query_params.clear()
     for key, value in kwargs.items():
-        st.query_params[key] = value
+        query_params[key] = value
 
 def login_screen():
     st.title("Login")
-    st.text_input("Username")
-    st.text_input("Password", type="password")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
     if st.button("Login"):
-        st.session_state.page = "restaurant-details"
         update_url(workflow="restaurant-details")
         st.rerun()
 
@@ -21,7 +21,6 @@ def enter_restaurant_details():
     menu_language = st.selectbox("Menu Language", ["English", "Spanish", "French"])
     menu_type = st.selectbox("Menu Type", ["Lunch", "Dinner"])
     if st.button("Next ➞"):
-        st.session_state.page = "upload-menu-pdf"
         update_url(workflow="upload-menu-pdf", restaurant_id=restaurant_id, menu_language=menu_language, menu_type=menu_type)
         st.rerun()
 
@@ -31,7 +30,6 @@ def upload_menu_pdf():
     st.write(f"Restaurant ID: {restaurant_id}")
     menu_id = st.text_input("Menu ID", "")
     if st.button("Next ➞"):
-        st.session_state.page = "slice-pdf-sections"
         update_url(workflow="slice-pdf-sections", restaurant_id=restaurant_id, menu_id=menu_id)
         st.rerun()
 
@@ -42,7 +40,6 @@ def slice_pdf_sections():
     st.write(f"Restaurant ID: {restaurant_id}, Menu ID: {menu_id}")
     slice_id = st.text_input("Slice ID", "")
     if st.button("Next ➞"):
-        st.session_state.page = "view-manage-menu"
         update_url(workflow="view-manage-menu", restaurant_id=restaurant_id, menu_id=menu_id, slice_id=slice_id)
         st.rerun()
 
@@ -53,7 +50,6 @@ def manage_menu():
     slice_id = st.query_params.get("slice_id", "")
     st.write(f"Restaurant ID: {restaurant_id}, Menu ID: {menu_id}, Slice ID: {slice_id}")
     if st.button("Next ➞"):
-        st.session_state.page = "save-finalize-menu"
         update_url(workflow="save-finalize-menu", restaurant_id=restaurant_id, menu_id=menu_id, slice_id=slice_id)
         st.rerun()
 
@@ -69,11 +65,15 @@ def save_and_finalize():
         st.rerun()
 
 def main():
-    if "page" not in st.session_state:
-        st.session_state.page = "login"
+    # Initialize session state
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
     
-    page = st.query_params.get("workflow", st.session_state.page)
+    # Extract query parameters
+    query_params = st.query_params
+    page = query_params.get("workflow", "login")
 
+    # Control navigation
     if page == "login":
         login_screen()
     elif page == "restaurant-details":
