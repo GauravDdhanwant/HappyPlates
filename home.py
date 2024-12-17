@@ -11,13 +11,13 @@ def login_screen():
     st.text_input("Password", type="password")
     if st.button("Login"):
         st.session_state.logged_in = True
-        st.session_state.page = "restaurant-details"
+        update_url("restaurant-details")
         st.rerun()
 
 def logout_button():
     if st.button("Logout"):
         st.session_state.logged_in = False
-        st.session_state.page = "login"
+        update_url("login")
         st.success("You have been logged out.")
         st.rerun()
 
@@ -29,7 +29,7 @@ def enter_restaurant_details():
     st.selectbox("Menu Type", ["Lunch", "Dinner"])
     col1, col2 = st.columns(2)
     if col2.button("Next ➞"):
-        st.session_state.page = "upload-menu-pdf"
+        update_url("upload-menu-pdf")
         st.rerun()
 
 def upload_menu_pdf():
@@ -39,10 +39,10 @@ def upload_menu_pdf():
     st.file_uploader("Upload Menu PDF", type=["pdf"])
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
-        st.session_state.page = "restaurant-details"
+        update_url("restaurant-details")
         st.rerun()
     if col2.button("Next ➞"):
-        st.session_state.page = "slice-pdf-sections"
+        update_url("slice-pdf-sections")
         st.rerun()
 
 def slice_pdf_sections():
@@ -52,10 +52,10 @@ def slice_pdf_sections():
     st.text("Define menu sections by selecting slices")
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
-        st.session_state.page = "upload-menu-pdf"
+        update_url("upload-menu-pdf")
         st.rerun()
     if col2.button("Next ➞"):
-        st.session_state.page = "view-manage-menu"
+        update_url("view-manage-menu")
         st.rerun()
 
 def manage_menu():
@@ -64,10 +64,10 @@ def manage_menu():
     st.write("Manage menu items here (list placeholder)")
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
-        st.session_state.page = "slice-pdf-sections"
+        update_url("slice-pdf-sections")
         st.rerun()
     if col2.button("Next ➞"):
-        st.session_state.page = "save-finalize-menu"
+        update_url("save-finalize-menu")
         st.rerun()
 
 def save_and_finalize():
@@ -76,36 +76,37 @@ def save_and_finalize():
     st.write("Finalize and submit the menu")
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
-        st.session_state.page = "view-manage-menu"
+        update_url("view-manage-menu")
         st.rerun()
     if col2.button("Submit ✓"):
         st.success("Menu submitted successfully!")
-        st.session_state.page = "restaurant-details"
+        update_url("restaurant-details")
         st.rerun()
 
 def main():
-    if "page" not in st.session_state:
-        st.session_state.page = "login"
+    query_params = st.query_params
+    page = query_params.get("workflow", "login")
+
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
 
-    if st.session_state.page == "login" or not st.session_state.logged_in:
+    if page == "login" or not st.session_state.logged_in:
         st.session_state.logged_in = False
         login_screen()
     elif st.session_state.logged_in:
-        if st.session_state.page == "restaurant-details":
+        if page == "restaurant-details":
             enter_restaurant_details()
-        elif st.session_state.page == "upload-menu-pdf":
+        elif page == "upload-menu-pdf":
             upload_menu_pdf()
-        elif st.session_state.page == "slice-pdf-sections":
+        elif page == "slice-pdf-sections":
             slice_pdf_sections()
-        elif st.session_state.page == "view-manage-menu":
+        elif page == "view-manage-menu":
             manage_menu()
-        elif st.session_state.page == "save-finalize-menu":
+        elif page == "save-finalize-menu":
             save_and_finalize()
     else:
         st.warning("You have been logged out. Please log in again.")
-        st.session_state.page = "login"
+        update_url("login")
         st.rerun()
 
 if __name__ == "__main__":
