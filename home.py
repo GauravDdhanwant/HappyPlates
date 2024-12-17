@@ -9,15 +9,12 @@ def update_url(page_name):
 
 def login_screen():
     st.title("Login")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    st.text_input("Username")
+    st.text_input("Password", type="password")
     if st.button("Login"):
-        if username and password:  # Simple placeholder condition
-            st.session_state.logged_in = True
-            update_url("restaurant-details")
-            st.rerun()
-        else:
-            st.error("Please enter both username and password.")
+        st.session_state.logged_in = True
+        update_url("restaurant-details")
+        st.rerun()
 
 def logout_button():
     if st.button("Logout"):
