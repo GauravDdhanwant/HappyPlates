@@ -4,7 +4,8 @@ from urllib.parse import urlencode
 def update_url(page_name):
     query_params = st.query_params
     query_params["workflow"] = page_name
-    st.experimental_set_query_params(**query_params)
+    st.query_params.clear()
+    st.query_params.update(query_params)
 
 def login_screen():
     st.title("Login")
@@ -14,7 +15,7 @@ def login_screen():
         if username and password:  # Simple placeholder condition
             st.session_state.logged_in = True
             update_url("restaurant-details")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Please enter both username and password.")
 
@@ -23,7 +24,7 @@ def logout_button():
         st.session_state.logged_in = False
         update_url("login")
         st.success("You have been logged out.")
-        st.experimental_rerun()
+        st.rerun()
 
 def enter_restaurant_details():
     st.title("1. Enter Restaurant Details")
@@ -34,7 +35,7 @@ def enter_restaurant_details():
     col1, col2 = st.columns(2)
     if col2.button("Next ➞"):
         update_url("upload-menu-pdf")
-        st.experimental_rerun()
+        st.rerun()
 
 def upload_menu_pdf():
     st.title("2. Upload Menu PDF")
@@ -44,10 +45,10 @@ def upload_menu_pdf():
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
         update_url("restaurant-details")
-        st.experimental_rerun()
+        st.rerun()
     if col2.button("Next ➞"):
         update_url("slice-pdf-sections")
-        st.experimental_rerun()
+        st.rerun()
 
 def slice_pdf_sections():
     st.title("3. Slice PDF into Sections")
@@ -57,10 +58,10 @@ def slice_pdf_sections():
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
         update_url("upload-menu-pdf")
-        st.experimental_rerun()
+        st.rerun()
     if col2.button("Next ➞"):
         update_url("view-manage-menu")
-        st.experimental_rerun()
+        st.rerun()
 
 def manage_menu():
     st.title("4. View and Manage Menu")
@@ -69,10 +70,10 @@ def manage_menu():
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
         update_url("slice-pdf-sections")
-        st.experimental_rerun()
+        st.rerun()
     if col2.button("Next ➞"):
         update_url("save-finalize-menu")
-        st.experimental_rerun()
+        st.rerun()
 
 def save_and_finalize():
     st.title("5. Save and Finalize Menu")
@@ -81,11 +82,11 @@ def save_and_finalize():
     col1, col2 = st.columns(2)
     if col1.button("➞ Back"):
         update_url("view-manage-menu")
-        st.experimental_rerun()
+        st.rerun()
     if col2.button("Submit ✓"):
         st.success("Menu submitted successfully!")
         update_url("restaurant-details")
-        st.experimental_rerun()
+        st.rerun()
 
 def main():
     query_params = st.query_params
@@ -111,7 +112,7 @@ def main():
     else:
         st.warning("You have been logged out. Please log in again.")
         update_url("login")
-        st.experimental_rerun()
+        st.rerun()
 
 if __name__ == "__main__":
     main()
